@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.oap.server.core.CoreModule;
@@ -185,7 +186,17 @@ public class MetricsPersistentWorker extends PersistenceWorker<Metrics> implemen
      * Accept all metrics data and push them into the queue for serial processing
      */
     @Override
-    public void in(Metrics metrics) {
+    public void    in(Metrics metrics) {
+
+        String sampleRadioStr = System.getProperty("sample.radio");
+        if(sampleRadioStr != null && sampleRadioStr.trim().length() > 0){
+            int sampleRadio = Integer.parseInt(sampleRadioStr);
+            if(ThreadLocalRandom.current().nextInt(100) >= sampleRadio){
+                return;
+            }
+        }
+
+
         aggregationCounter.inc();
         dataCarrier.produce(metrics);
     }

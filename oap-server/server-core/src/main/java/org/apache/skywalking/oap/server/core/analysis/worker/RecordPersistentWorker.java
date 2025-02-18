@@ -20,6 +20,8 @@ package org.apache.skywalking.oap.server.core.analysis.worker;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.apache.skywalking.oap.server.core.analysis.record.Record;
 import org.apache.skywalking.oap.server.core.storage.IBatchDAO;
 import org.apache.skywalking.oap.server.core.storage.IRecordDAO;
@@ -50,6 +52,15 @@ public class RecordPersistentWorker extends AbstractWorker<Record> {
 
     @Override
     public void in(Record record) {
+
+        String sampleRadioStr = System.getProperty("sample.radio");
+        if(sampleRadioStr != null && sampleRadioStr.trim().length() > 0){
+            int sampleRadio = Integer.parseInt(sampleRadioStr);
+            if(ThreadLocalRandom.current().nextInt(100) >= sampleRadio){
+                return;
+            }
+        }
+
         try {
             InsertRequest insertRequest = recordDAO.prepareBatchInsert(model, record);
             batchDAO.insert(insertRequest);
