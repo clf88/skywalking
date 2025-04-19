@@ -53,7 +53,7 @@ public class RecordPersistentWorker extends AbstractWorker<Record> {
     @Override
     public void in(Record record) {
 
-        String sampleRadioStr = System.getProperty("sample.radio");
+        String sampleRadioStr = System.getProperty("sample.radio.trace");
         if(sampleRadioStr != null && sampleRadioStr.trim().length() > 0){
             int sampleRadio = Integer.parseInt(sampleRadioStr);
             if(ThreadLocalRandom.current().nextInt(100) >= sampleRadio){

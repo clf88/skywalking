@@ -188,7 +188,7 @@ public class MetricsPersistentWorker extends PersistenceWorker<Metrics> implemen
     @Override
     public void    in(Metrics metrics) {
 
-        String sampleRadioStr = System.getProperty("sample.radio");
+        String sampleRadioStr = System.getProperty("sample.radio.metric");
         if(sampleRadioStr != null && sampleRadioStr.trim().length() > 0){
             int sampleRadio = Integer.parseInt(sampleRadioStr);
             if(ThreadLocalRandom.current().nextInt(100) >= sampleRadio){
